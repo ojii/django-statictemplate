@@ -33,6 +33,14 @@ The management command renders a template given by name (standard Django
 template name resolution applies) and writes the output to stdout, so you
 should redirect stdout to a filename.
 
+=========
+Arguments
+=========
+
+ * ``template``: standard django template name to render
+ * ``language``: sets the client django_language cookie to render page in the given language
+ * ``extra_request``: serialized dictionary (as ``variable=value,variable=value``) passed in the request
+
 
 *******
 License

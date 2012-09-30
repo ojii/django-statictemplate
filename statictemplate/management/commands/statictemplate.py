@@ -44,10 +44,12 @@ def override_middleware():
         delattr(settings, 'MIDDLEWARE_CLASSES')
 
 
-def make_static(template):
+def make_static(template, language, request={}):
     with nested(override_urlconf(), override_middleware()):
         client = Client()
-        response = client.get('/', {'template': template})
+        client.cookies['django_language'] = language
+        request.update({'template':template})
+        response = client.get('/', request)
         if response.status_code != 200:
             raise InvalidResponseError(
                 'Response code was %d, expected 200' % response.status_code
@@ -56,8 +58,15 @@ def make_static(template):
 
 
 class Command(BaseCommand):
-    def handle(self, template, **options):
-        output = make_static(template)
+    def handle(self, template, language="en", extra_request=None, **options):
+        request = {}
+        try:
+            if extra_request:
+                for var in extra_request.split(","):
+                    request[var.split("=")[0]] = var.split("=")[1]
+        except:
+            raise ValueError("error in extra_request parameter: syntax variable=value,variable=value")
+        output = make_static(template, language, request)
         self.stdout.write(output)
 
 
