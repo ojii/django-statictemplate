@@ -27,7 +27,7 @@ Add ``statictemplate`` to your ``INSTALLED_APPS``.
 Usage
 *****
 
-``python manage.py dynamic_500.html > 500.html``
+``python manage.py statictemplate dynamic_500.html > 500.html``
 
 The management command renders a template given by name (standard Django
 template name resolution applies) and writes the output to stdout, so you
