@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from contextlib import contextmanager, nested
+import urlparse
 from django.conf import settings
 try:
     from django.conf.urls.defaults import patterns, url, include
@@ -9,6 +10,7 @@ from django.core.management.base import BaseCommand
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.test.client import Client
+from django.utils.translation import get_language
 
 
 class InvalidResponseError(Exception):
@@ -58,14 +60,15 @@ def make_static(template, language, request={}):
 
 
 class Command(BaseCommand):
-    def handle(self, template, language="en", extra_request=None, **options):
+    def handle(self, template, language=None, extra_request=None, **options):
         request = {}
+        if not language:
+            language = get_language()
         try:
             if extra_request:
-                for var in extra_request.split(","):
-                    request[var.split("=")[0]] = var.split("=")[1]
+                request.update(dict(urlparse.parse_qsl(extra_request)))
         except:
-            raise ValueError("error in extra_request parameter: syntax variable=value,variable=value")
+            raise ValueError("error in extra_request parameter: syntax 'variable=value&variable=value'")
         output = make_static(template, language, request)
         self.stdout.write(output)
 
