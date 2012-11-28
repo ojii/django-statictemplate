@@ -2,7 +2,7 @@
 Django Statictemplate
 #####################
 
-This project aims at providing a compromise between dynamic error pages for 
+This project aims at providing a compromise between dynamic error pages for
 Django (that use template tags etc and therefore potentially error too) and
 having to write static error pages by hand.
 
@@ -38,8 +38,11 @@ Arguments
 =========
 
  * ``template``: standard django template name to render
- * ``language``: sets the client django_language cookie to render page in the given language
- * ``extra_request``: serialized dictionary (as ``variable=value,variable=value``) passed in the request
+ * ``language``: sets the client django_language cookie to render page in the
+   given language
+ * ``extra_request``: extra parameters injected in the request. Parameters must
+   be serialized in querystring format (e.g.: ``'variable=value&variable=value'``;
+   please note the single quote **'** to protect ampersand **&**).
 
 
 *******
