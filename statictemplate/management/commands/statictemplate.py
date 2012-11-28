@@ -64,11 +64,8 @@ class Command(BaseCommand):
         request = {}
         if not language:
             language = get_language()
-        try:
-            if extra_request:
-                request.update(dict(urlparse.parse_qsl(extra_request)))
-        except:
-            raise ValueError("error in extra_request parameter: syntax 'variable=value&variable=value'")
+        if extra_request:
+            request.update(urlparse.parse_qs(extra_request,strict_parsing=True))
         output = make_static(template, language, request)
         self.stdout.write(output)
 
