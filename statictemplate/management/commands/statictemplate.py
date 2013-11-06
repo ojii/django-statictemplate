@@ -11,6 +11,10 @@ from django.template.context import RequestContext
 from django.test.client import Client
 
 
+class InvalidResponseError(Exception):
+    pass
+
+
 @contextmanager
 def override_urlconf():
     has_old = hasattr(settings, 'ROOT_URLCONF')
@@ -27,6 +31,10 @@ def make_static(template):
     with override_urlconf():
         client = Client()
         response = client.get('/', {'template': template})
+        if response.status_code != 200:
+            raise InvalidResponseError(
+                'Response code was %d' % response.status_code
+            )
         return response.content
 
 
