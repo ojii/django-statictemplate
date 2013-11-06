@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from contextlib import contextmanager
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url, include
+try:
+    from django.conf.urls.defaults import patterns, url, include
+    assert all((patterns, url, include))
+except ImportError:
+    from django.conf.urls import patterns, url, include  # pragma: no cover
 from django.core.management.base import BaseCommand
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
