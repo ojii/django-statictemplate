@@ -50,7 +50,7 @@ def make_static(template):
         response = client.get('/', {'template': template})
         if response.status_code != 200:
             raise InvalidResponseError(
-                'Response code was %d' % response.status_code
+                'Response code was %d, expected 200' % response.status_code
             )
         return response.content
 
