@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.test.client import Client
 
+
 @contextmanager
 def override_urlconf():
     has_old = hasattr(settings, 'ROOT_URLCONF')
@@ -15,8 +16,9 @@ def override_urlconf():
     yield
     if has_old:
         setattr(settings, 'ROOT_URLCONF', old)
-    else: # pragma: no cover
+    else:  # pragma: no cover
         delattr(settings, 'ROOT_URLCONF')
+
 
 def make_static(template):
     with override_urlconf():
