@@ -33,4 +33,4 @@ class StaticTemplateTests(unittest.TestCase):
     def test_call_command(self):
         sio = StringIO()
         call_command('statictemplate', 'simple', stdout=sio)
-        self.assertEqual(sio.getvalue(), 'headsimple')
+        self.assertEqual(sio.getvalue().strip(), 'headsimple')
