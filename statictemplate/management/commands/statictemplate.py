@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from contextlib import contextmanager
+from contextlib import contextmanager, nested
 from django.conf import settings
 try:
     from django.conf.urls.defaults import patterns, url, include
@@ -45,15 +45,14 @@ def override_middleware():
 
 
 def make_static(template):
-    with override_urlconf():
-        with override_middleware():
-            client = Client()
-            response = client.get('/', {'template': template})
-            if response.status_code != 200:
-                raise InvalidResponseError(
-                    'Response code was %d' % response.status_code
-                )
-            return response.content
+    with nested(override_urlconf(), override_middleware()):
+        client = Client()
+        response = client.get('/', {'template': template})
+        if response.status_code != 200:
+            raise InvalidResponseError(
+                'Response code was %d' % response.status_code
+            )
+        return response.content
 
 
 class Command(BaseCommand):
