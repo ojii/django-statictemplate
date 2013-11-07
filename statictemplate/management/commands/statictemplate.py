@@ -38,8 +38,7 @@ def render(request):
     return render_to_response(template_name, RequestContext(request))
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = patterns('',
     url('^$', render),
     url('^others', include(settings.ROOT_URLCONF))
 )
