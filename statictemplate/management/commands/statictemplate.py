@@ -27,15 +27,33 @@ def override_urlconf():
         delattr(settings, 'ROOT_URLCONF')
 
 
+@contextmanager
+def override_middleware():
+    has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
+    old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
+    settings.MIDDLEWARE_CLASSES = (
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+    )
+    yield
+    if has_old:
+        setattr(settings, 'MIDDLEWARE_CLASSES', old)
+    else:  # pragma: no cover
+        delattr(settings, 'MIDDLEWARE_CLASSES')
+
+
 def make_static(template):
     with override_urlconf():
-        client = Client()
-        response = client.get('/', {'template': template})
-        if response.status_code != 200:
-            raise InvalidResponseError(
-                'Response code was %d' % response.status_code
-            )
-        return response.content
+        with override_middleware():
+            client = Client()
+            response = client.get('/', {'template': template})
+            if response.status_code != 200:
+                raise InvalidResponseError(
+                    'Response code was %d' % response.status_code
+                )
+            return response.content
 
 
 class Command(BaseCommand):
