@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from StringIO import StringIO
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.core.management import call_command
 from django.template.base import TemplateDoesNotExist
 from django.template.loader import BaseLoader
@@ -22,6 +23,11 @@ class TestLoader(BaseLoader):
         return found, template_name
 
 
+class MeddlingMiddleware(object):
+    def process_request(self, request):
+        return HttpResponseRedirect('/foobarbaz')
+
+
 class StaticTemplateTests(unittest.TestCase):
     def setUp(self):
         settings.TEMPLATE_LOADERS = ['statictemplate.tests.TestLoader']
@@ -34,3 +40,12 @@ class StaticTemplateTests(unittest.TestCase):
         sio = StringIO()
         call_command('statictemplate', 'simple', stdout=sio)
         self.assertEqual(sio.getvalue().strip(), 'headsimple')
+
+    def test_meddling_middleware(self):
+        middleware = (
+            'statictemplate.tests.MeddlingMiddleware',
+        )
+        settings.MIDDLEWARE_CLASSES = middleware
+        output = make_static('simple')
+        self.assertEqual(output, 'headsimple')
+        self.assertEqual(settings.MIDDLEWARE_CLASSES, middleware)
