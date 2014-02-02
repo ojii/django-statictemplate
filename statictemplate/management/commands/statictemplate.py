@@ -13,6 +13,9 @@ from django.test.client import Client
 from django.utils.translation import get_language
 
 
+from ...settings import STATICTEMPLATE_OVERRIDE_MIDDLEWARE
+
+
 class InvalidResponseError(Exception):
     pass
 
@@ -31,26 +34,29 @@ def override_urlconf():
 
 @contextmanager
 def override_middleware():
-    has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
-    old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
-    settings.MIDDLEWARE_CLASSES = (
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-    )
-    yield
-    if has_old:
-        setattr(settings, 'MIDDLEWARE_CLASSES', old)
-    else:  # pragma: no cover
-        delattr(settings, 'MIDDLEWARE_CLASSES')
+    if STATICTEMPLATE_OVERRIDE_MIDDLEWARE:
+        has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
+        old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
+        settings.MIDDLEWARE_CLASSES = (
+            'django.middleware.common.CommonMiddleware',
+            'django.contrib.sessions.middleware.SessionMiddleware',
+            'django.middleware.csrf.CsrfViewMiddleware',
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+        )
+        yield
+        if has_old:
+            setattr(settings, 'MIDDLEWARE_CLASSES', old)
+        else:  # pragma: no cover
+            delattr(settings, 'MIDDLEWARE_CLASSES')
+    else:
+        yield
 
 
 def make_static(template, language, request={}):
     with nested(override_urlconf(), override_middleware()):
         client = Client()
         client.cookies['django_language'] = language
-        request.update({'template':template})
+        request.update({'template': template})
         response = client.get('/', request)
         if response.status_code != 200:
             raise InvalidResponseError(
@@ -65,9 +71,9 @@ class Command(BaseCommand):
         if not language:
             language = get_language()
         if extra_request:
-            request.update(urlparse.parse_qs(extra_request,strict_parsing=True))
+            request.update(urlparse.parse_qs(extra_request, strict_parsing=True))
         output = make_static(template, language, request)
-        self.stdout.write(output)
+        self.stdout.write(output.decode("utf-8"))
 
 
 def render(request):
@@ -77,5 +83,5 @@ def render(request):
 
 urlpatterns = patterns('',
     url('^$', render),
-    url('^others', include(settings.ROOT_URLCONF))
+    url('^', include(settings.ROOT_URLCONF))
 )
