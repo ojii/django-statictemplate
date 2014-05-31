@@ -7,7 +7,10 @@ from django.template.base import TemplateDoesNotExist
 from django.template.loader import BaseLoader
 from django.test import SimpleTestCase
 from tempfile import mkstemp
-from statictemplate.management.commands.statictemplate import make_static
+from statictemplate.management.commands.statictemplate import make_static, \
+    InvalidResponseError
+
+from . import settings as statictemplate_settings
 
 
 class TestLoader(BaseLoader):
@@ -63,3 +66,14 @@ class StaticTemplateTests(SimpleTestCase):
         output = make_static('simple')
         self.assertEqual(output, 'headsimple')
         self.assertEqual(settings.MIDDLEWARE_CLASSES, middleware)
+
+    def test_no_ovveride_middleware(self):
+        with self.settings(STATICTEMPLATE_OVERRIDE_MIDDLEWARE=False):
+            middleware = (
+                'statictemplate.tests.MeddlingMiddleware',
+            )
+            settings.MIDDLEWARE_CLASSES = middleware
+            statictemplate_settings.OVERRIDE_MIDDLEWARE = False
+            with self.assertRaises(InvalidResponseError):
+                output = make_static('simple')
+            statictemplate_settings.OVERRIDE_MIDDLEWARE = True
