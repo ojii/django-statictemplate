@@ -5,13 +5,15 @@ from django.http import HttpResponseRedirect
 from django.core.management import call_command
 from django.template.base import TemplateDoesNotExist
 from django.template.loader import BaseLoader
+from django.test import SimpleTestCase
+from tempfile import mkstemp
 from statictemplate.management.commands.statictemplate import make_static
-import unittest
 
 
 class TestLoader(BaseLoader):
     is_usable = True
     templates = {
+        'request': '{% extends "base" %}{% block content %}simple {{ request.GET.extra }}{% endblock %}',
         'simple': '{% extends "base" %}{% block content %}simple{% endblock %}',
         'base': '{% block head %}head{% endblock %}{% block content %}content{% endblock %}',
     }
@@ -28,7 +30,7 @@ class MeddlingMiddleware(object):
         return HttpResponseRedirect('/foobarbaz')
 
 
-class StaticTemplateTests(unittest.TestCase):
+class StaticTemplateTests(SimpleTestCase):
     def setUp(self):
         settings.TEMPLATE_LOADERS = ['statictemplate.tests.TestLoader']
 
@@ -40,6 +42,18 @@ class StaticTemplateTests(unittest.TestCase):
         sio = StringIO()
         call_command('statictemplate', 'simple', stdout=sio)
         self.assertEqual(sio.getvalue().strip(), 'headsimple')
+
+    def test_request_command(self):
+        sio = StringIO()
+        call_command('statictemplate', 'request', stdout=sio,
+                     extra_request='extra=extra_request&canonical=1')
+        self.assertEqual(sio.getvalue().strip(), 'headsimple extra_request')
+
+    def test_file_command(self):
+        _, sio = mkstemp()
+        call_command('statictemplate', 'simple', output=sio)
+        with open(sio, 'r') as tmp:
+            self.assertEqual(tmp.read().strip(), 'headsimple')
 
     def test_meddling_middleware(self):
         middleware = (
