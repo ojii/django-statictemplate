@@ -2,6 +2,31 @@
 Django Statictemplate
 #####################
 
+.. image:: https://pypip.in/version/django-statictemplate/badge.png
+    :target: https://pypi.python.org/pypi/django-statictemplate/
+    :alt: Latest Version
+
+.. image:: https://travis-ci.org/yakky/django-statictemplate.svg
+    :target: https://travis-ci.org/yakky/django-statictemplate
+    :alt: Travis status
+
+.. image:: https://coveralls.io/repos/yakky/django-statictemplate/badge.png
+    :target: https://coveralls.io/r/yakky/django-statictemplate
+    :alt: Coveralls status
+
+.. image:: https://pypip.in/download/django-statictemplate/badge.png
+    :target: https://pypi.python.org/pypi//django-statictemplate/
+    :alt: Download
+
+.. image:: https://pypip.in/wheel/django-statictemplate/badge.png
+    :target: https://pypi.python.org/pypi/django-statictemplate/
+    :alt: Wheel Status
+
+.. image:: https://pypip.in/license/django-statictemplate/badge.png
+    :target: https://pypi.python.org/pypi/django-statictemplate/
+    :alt: License
+
+
 This project aims at providing a compromise between dynamic error pages for
 Django (that use template tags etc and therefore potentially error too) and
 having to write static error pages by hand.
