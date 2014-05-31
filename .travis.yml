@@ -12,7 +12,7 @@ env:
 install:
   - pip install $DJANGO coverage coveralls
 script: coverage run --rcfile=.coveragerc runtests.py
-after_success: coveralls --config_file=.coveragerc
+after_success: coveralls
 notifications:
   email:
     recipients:
