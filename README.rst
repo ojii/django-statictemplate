@@ -40,18 +40,18 @@ template name resolution applies) and writes the output to stdout or to a file.
 Arguments
 =========
 
- * ``template``: standard django template name to render
- * ``language``: sets the client django_language cookie to render page in the
-   given language
- * ``extra_request``: extra parameters injected in the request. Parameters must
-   be serialized in querystring format (e.g.: ``'variable=value&variable=value'``;
-   please note the single quote **'** to protect ampersand **&**).
+* ``template``: standard django template name to render
+* ``language``: sets the client django_language cookie to render page in the
+  given language
+* ``extra_request``: extra parameters injected in the request. Parameters must
+  be serialized in querystring format (e.g.: ``'variable=value&variable=value'``;
+  please note the single quote **'** to protect ampersand **&**).
 
 =======
 Options
 =======
 
- * ``-f``, ``--file``: file destionation for command output
+* ``-f``, ``--file``: file destionation for command output
 
 *******
 License
