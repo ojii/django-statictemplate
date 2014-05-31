@@ -29,9 +29,12 @@ Usage
 
 ``python manage.py statictemplate dynamic_500.html > 500.html``
 
+or
+
+``python manage.py statictemplate dynamic_500.html -f 500.html``
+
 The management command renders a template given by name (standard Django
-template name resolution applies) and writes the output to stdout, so you
-should redirect stdout to a filename.
+template name resolution applies) and writes the output to stdout or to a file.
 
 =========
 Arguments
@@ -44,6 +47,11 @@ Arguments
    be serialized in querystring format (e.g.: ``'variable=value&variable=value'``;
    please note the single quote **'** to protect ampersand **&**).
 
+=======
+Options
+=======
+
+ * ``-f``, ``--file``: file destionation for command output
 
 *******
 License
