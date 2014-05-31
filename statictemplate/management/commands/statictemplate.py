@@ -6,16 +6,16 @@ import urlparse
 from django.conf import settings
 try:
     from django.conf.urls.defaults import patterns, url, include
-except ImportError:  # pragma: no cover
-    from django.conf.urls import patterns, url, include  # pragma: no cover
+except ImportError:
+    from django.conf.urls import patterns, url, include  # NOQA
 from django.core.management.base import BaseCommand
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.test.client import Client
 try:
     from django.utils.encoding import force_text
-except ImportError:  # pragma: no cover
-    from django.utils.encoding import force_unicode as force_text  # pragma: no cover
+except ImportError:  # NOQA
+    from django.utils.encoding import force_unicode as force_text  # NOQA
 from django.utils.translation import get_language
 
 
@@ -31,7 +31,7 @@ def override_urlconf():
     yield
     if has_old:
         setattr(settings, 'ROOT_URLCONF', old)
-    else:  # pragma: no cover
+    else:  # NOQA
         delattr(settings, 'ROOT_URLCONF')
 
 
@@ -48,7 +48,7 @@ def override_middleware():
     yield
     if has_old:
         setattr(settings, 'MIDDLEWARE_CLASSES', old)
-    else:  # pragma: no cover
+    else:  # NOQA
         delattr(settings, 'MIDDLEWARE_CLASSES')
 
 
@@ -62,7 +62,7 @@ def make_static(template, language=None, request=None):
         request.update({'template': template})
         response = client.get('/', request)
         if response.status_code != 200:
-            raise InvalidResponseError(  # pragma: no cover
+            raise InvalidResponseError(  # NOQA
                 'Response code was %d, expected 200' % response.status_code
             )
         return response.content
@@ -74,14 +74,15 @@ class Command(BaseCommand):
                     action='store',
                     dest='output',
                     help='Output file'),
-        )
+    )
 
     def handle(self, template, language=None, extra_request=None, **options):
         request = {}
         if not language:
             language = get_language()
         if extra_request:
-            request.update(urlparse.parse_qs(extra_request, strict_parsing=True))
+            request.update(urlparse.parse_qs(extra_request,
+                                             strict_parsing=True))
         output = make_static(template, language, request)
         if options.get('output', False):
             with open(options.get('output'), 'w') as output_file:
