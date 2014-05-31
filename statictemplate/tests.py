@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.management import call_command
