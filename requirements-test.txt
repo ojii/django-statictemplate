@@ -1,0 +1,3 @@
+django
+flake8
+coverage

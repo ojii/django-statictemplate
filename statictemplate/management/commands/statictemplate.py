@@ -21,7 +21,6 @@ except ImportError:  # NOQA
 from django.utils.translation import get_language
 
 
-
 class InvalidResponseError(Exception):
     pass
 
@@ -56,7 +55,7 @@ def override_middleware():
         else:  # NOQA
             delattr(settings, 'MIDDLEWARE_CLASSES')
     else:
-         yield
+        yield
 
 
 def make_static(template, language=None, request=None):
