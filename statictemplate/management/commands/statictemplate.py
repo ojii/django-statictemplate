@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-from contextlib import contextmanager, nested
+from contextlib import contextmanager
 from optparse import make_option
-import urlparse
-
+try:
+    import urlparse
+except ImportError:  # NOQA
+    from urllib import parse as urlparse
 from django.conf import settings
 try:
     from django.conf.urls.defaults import patterns, url, include
-except ImportError:
-    from django.conf.urls import patterns, url, include  # NOQA
+except ImportError:  # NOQA
+    from django.conf.urls import patterns, url, include
 from django.core.management.base import BaseCommand
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -15,7 +17,7 @@ from django.test.client import Client
 try:
     from django.utils.encoding import force_text
 except ImportError:  # NOQA
-    from django.utils.encoding import force_unicode as force_text  # NOQA
+    from django.utils.encoding import force_unicode as force_text
 from django.utils.translation import get_language
 
 
@@ -58,19 +60,20 @@ def override_middleware():
 
 
 def make_static(template, language=None, request=None):
-    with nested(override_urlconf(), override_middleware()):
-        client = Client()
-        if not request:
-            request = {}
-        if language:
-            client.cookies['django_language'] = language
-        request.update({'template': template})
-        response = client.get('/', request)
-        if response.status_code != 200:
-            raise InvalidResponseError(  # NOQA
-                'Response code was %d, expected 200' % response.status_code
-            )
-        return response.content
+    with override_urlconf():
+        with override_middleware():
+            client = Client()
+            if not request:
+                request = {}
+            if language:
+                client.cookies['django_language'] = language
+            request.update({'template': template})
+            response = client.get('/', request)
+            if response.status_code != 200:
+                raise InvalidResponseError(  # NOQA
+                    'Response code was %d, expected 200' % response.status_code
+                )
+            return force_text(response.content)
 
 
 class Command(BaseCommand):
@@ -93,7 +96,7 @@ class Command(BaseCommand):
             with open(options.get('output'), 'w') as output_file:
                 output_file.write(output)
         else:
-            self.stdout.write(force_text(output))
+            self.stdout.write(output)
 
 
 def render(request):
