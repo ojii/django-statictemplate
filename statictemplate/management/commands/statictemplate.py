@@ -19,6 +19,7 @@ except ImportError:  # NOQA
 from django.utils.translation import get_language
 
 
+
 class InvalidResponseError(Exception):
     pass
 
@@ -37,19 +38,23 @@ def override_urlconf():
 
 @contextmanager
 def override_middleware():
-    has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
-    old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
-    settings.MIDDLEWARE_CLASSES = (
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-    )
-    yield
-    if has_old:
-        setattr(settings, 'MIDDLEWARE_CLASSES', old)
-    else:  # NOQA
-        delattr(settings, 'MIDDLEWARE_CLASSES')
+    from ...settings import OVERRIDE_MIDDLEWARE
+    if OVERRIDE_MIDDLEWARE:
+        has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
+        old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
+        settings.MIDDLEWARE_CLASSES = (
+            'django.middleware.common.CommonMiddleware',
+            'django.contrib.sessions.middleware.SessionMiddleware',
+            'django.middleware.csrf.CsrfViewMiddleware',
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+        )
+        yield
+        if has_old:
+            setattr(settings, 'MIDDLEWARE_CLASSES', old)
+        else:  # NOQA
+            delattr(settings, 'MIDDLEWARE_CLASSES')
+    else:
+         yield
 
 
 def make_static(template, language=None, request=None):

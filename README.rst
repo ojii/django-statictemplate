@@ -48,6 +48,28 @@ Installation
 Add ``statictemplate`` to your ``INSTALLED_APPS``.
 
 
+*************
+Configuration
+*************
+
+``django-statictemplate`` does not require any configuration. by default.
+
+
+By default ``django-statictemplate`` overrides the configured middlewares for
+enhanced compatibility and to avoid incompatibilities.
+
+However this may not be always feasible: if you need a specific set of
+middlewares to be loaded set::
+
+    STATICTEMPLATE_OVERRIDE_MIDDLEWARE = False
+
+in you settings files.
+
+Please note that ``django-statictemplate`` has not been tested with every
+possible middleware, thus you may encounter failures and strange behaviors
+especially fi you use middlewares that changes the response type.
+
+
 *****
 Usage
 *****
