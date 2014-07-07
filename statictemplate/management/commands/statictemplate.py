@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from contextlib import contextmanager
+import codecs
 from optparse import make_option
 try:
     import urlparse
@@ -92,7 +93,7 @@ class Command(BaseCommand):
                                              strict_parsing=True))
         output = make_static(template, language, request)
         if options.get('output', False):
-            with open(options.get('output'), 'w') as output_file:
+            with codecs.open(options.get('output'), 'w', 'utf-8') as output_file:
                 output_file.write(output)
         else:
             self.stdout.write(output)
