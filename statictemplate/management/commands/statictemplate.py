@@ -82,10 +82,15 @@ class Command(BaseCommand):
                     action='store',
                     dest='output',
                     help='Output file'),
+        make_option('--language-code', '-l',
+                    action='store',
+                    dest='language_code',
+                    help='Language Code')
     )
 
     def handle(self, template, language=None, extra_request=None, **options):
         request = {}
+        language = options.get('language_code', False)
         if not language:
             language = get_language()
         if extra_request:
