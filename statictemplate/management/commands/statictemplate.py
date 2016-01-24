@@ -77,16 +77,16 @@ def make_static(template, language=None, request=None):
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('--file', '-f',
-                    action='store',
-                    dest='output',
-                    help='Output file'),
-        make_option('--language-code', '-l',
-                    action='store',
-                    dest='language_code',
-                    help='Language Code')
-    )
+    def add_arguments(self,parser):
+      parser.add_argument('--file','-f',
+                          action='store',
+                          dest='output',
+                          help='Output file'),
+      parser.add_argument('--language-code','-l',
+                          action='store',
+                          dest='language_code',
+                          help='Language Code')
+      parser.add_argument('template', nargs='+', type=str)
 
     def handle(self, template, language=None, extra_request=None, **options):
         request = {}
@@ -106,10 +106,10 @@ class Command(BaseCommand):
 
 def render(request):
     template_name = request.GET['template']
-    return render_to_response(template_name, RequestContext(request))
+    return render_to_response(template_name)
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url('^$', render),
     url('^', include(settings.ROOT_URLCONF))
-)
+]
