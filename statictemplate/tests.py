@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from distutils.version import LooseVersion
+
+import django
+
 try:
     from StringIO import StringIO
 except:
@@ -6,8 +10,14 @@ except:
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.management import call_command
-from django.template.base import TemplateDoesNotExist
-from django.template.loader import BaseLoader
+try:
+    from django.template import TemplateDoesNotExist
+except:
+    from django.template.base import TemplateDoesNotExist
+try:
+    from django.template.loaders.base import Loader
+except ImportError:
+    from django.template.loader import BaseLoader as Loader
 from django.test import SimpleTestCase
 from tempfile import mkstemp
 from statictemplate.management.commands.statictemplate import make_static, \
@@ -16,10 +26,10 @@ from statictemplate.management.commands.statictemplate import make_static, \
 from . import settings as statictemplate_settings
 
 
-class TestLoader(BaseLoader):
+class TestLoader(Loader):
     is_usable = True
     templates = {
-        'request': '{% extends "base" %}{% block content %}simple {{ request.GET.extra }}{% endblock %}',
+        'request': '{% extends "base" %}{% block content %}request {{ request.GET.extra }}{% endblock %}',
         'simple': '{% extends "base" %}{% block content %}simple{% endblock %}',
         'base': '{% block head %}head{% endblock %}{% block content %}content{% endblock %}',
     }
@@ -38,7 +48,11 @@ class MeddlingMiddleware(object):
 
 class StaticTemplateTests(SimpleTestCase):
     def setUp(self):
-        settings.TEMPLATE_LOADERS = ['statictemplate.tests.TestLoader']
+        super(StaticTemplateTests, self).setUp()
+        if LooseVersion(django.get_version()) < LooseVersion('1.8'):
+            settings.TEMPLATE_LOADERS = ['statictemplate.tests.TestLoader']
+        else:
+            settings.TEMPLATES[0]['OPTIONS']['loaders'] = ['statictemplate.tests.TestLoader']
 
     def test_python_api(self):
         output = make_static('simple')
@@ -53,7 +67,7 @@ class StaticTemplateTests(SimpleTestCase):
         sio = StringIO()
         call_command('statictemplate', 'request', stdout=sio,
                      extra_request='extra=extra_request&canonical=1')
-        self.assertEqual(sio.getvalue().strip(), 'headsimple extra_request')
+        self.assertEqual(sio.getvalue().strip(), 'headrequest extra_request')
 
     def test_file_command(self):
         _, sio = mkstemp()
