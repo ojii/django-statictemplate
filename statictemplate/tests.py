@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 from distutils.version import LooseVersion
+from tempfile import mkstemp
 
 import django
+from django.conf import settings
+from django.core.management import call_command
+from django.http import HttpResponseRedirect
+from django.test import SimpleTestCase
+
+from statictemplate.management.commands.statictemplate import (
+    InvalidResponseError, make_static,
+)
+
+from . import settings as statictemplate_settings
 
 try:
     from StringIO import StringIO
 except:
     from io import StringIO
-from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.core.management import call_command
 try:
     from django.template import TemplateDoesNotExist
 except:
@@ -18,18 +26,13 @@ try:
     from django.template.loaders.base import Loader
 except ImportError:
     from django.template.loader import BaseLoader as Loader
-from django.test import SimpleTestCase
-from tempfile import mkstemp
-from statictemplate.management.commands.statictemplate import make_static, \
-    InvalidResponseError
-
-from . import settings as statictemplate_settings
 
 
 class TestLoader(Loader):
     is_usable = True
     templates = {
-        'request': '{% extends "base" %}{% block content %}request {{ request.GET.extra }}{% endblock %}',
+        'request': '{% extends "base" %}{% block content %}request '
+                   '{{ request.GET.extra }}{% endblock %}',
         'simple': '{% extends "base" %}{% block content %}simple{% endblock %}',
         'base': '{% block head %}head{% endblock %}{% block content %}content{% endblock %}',
     }
@@ -92,5 +95,5 @@ class StaticTemplateTests(SimpleTestCase):
             settings.MIDDLEWARE_CLASSES = middleware
             statictemplate_settings.OVERRIDE_MIDDLEWARE = False
             with self.assertRaises(InvalidResponseError):
-                output = make_static('simple')
+                make_static('simple')
             statictemplate_settings.OVERRIDE_MIDDLEWARE = True

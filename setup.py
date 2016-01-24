@@ -32,9 +32,11 @@ CLASSIFIERS = [
 setup(
     name='django-statictemplate',
     version=__version__,
-    description=('This project aims at providing a compromise between dynamic '
+    description=(
+        'This project aims at providing a compromise between dynamic '
         'error pages for Django (that use template tags etc and therefore '
-        'potentially error too) and having to write static error pages by hand.'),
+        'potentially error too) and having to write static error pages by hand.'
+    ),
     author='Jonas Obrist',
     author_email='ojiidotch@gmail.com',
     url='https://github.com/ojii/django-statictemplate',

@@ -1,5 +1,5 @@
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
 
 import sys
 from distutils.version import LooseVersion
@@ -52,7 +52,7 @@ def runtests():
             'NAME': 'django',
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
             'OPTIONS': {
-                 'context_processors': [
+                'context_processors': [
                     'django.contrib.auth.context_processors.auth',
                     'django.template.context_processors.i18n',
                     'django.template.context_processors.debug',
@@ -61,7 +61,7 @@ def runtests():
                     'django.template.context_processors.static',
                     'django.template.context_processors.tz',
                     'django.contrib.messages.context_processors.messages',
-                 ],
+                ],
             }
         }]
 
@@ -74,7 +74,7 @@ def runtests():
     from django.test.runner import DiscoverRunner
     test_args = ['statictemplate']
     failures = DiscoverRunner(
-            verbosity=1, interactive=True, failfast=False
+        verbosity=1, interactive=True, failfast=False
     ).run_tests(test_args)
     sys.exit(failures)
 
