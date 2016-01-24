@@ -13,7 +13,9 @@ env:
   - DJANGO='django<1.9'
   - DJANGO='django<1.10'
 install:
-  - pip install $DJANGO coverage coveralls
+  - pip install $DJANGO coverage coveralls flake8 isort
+before_script:
+  - make lint
 script: coverage run --rcfile=.coveragerc runtests.py
 after_success: coveralls
 notifications:
