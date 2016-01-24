@@ -1,3 +1,15 @@
+3.0 (unreleased)
+================
+
+* Django 1.8, 1.9 support
+* Drop support for Django < 1.6
+* Add language option to the command line
+
+2.0.1 (2014-07-02)
+==================
+
+* Output file is utf-8 encoded
+
 2.0 (2014-06-02)
 ================
 
@@ -16,4 +28,4 @@
 1.0 (2012-04-11)
 ================
 
-* Initial release 
+* Initial release
