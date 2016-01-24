@@ -32,7 +32,7 @@ class TestLoader(Loader):
     is_usable = True
     templates = {
         'request': '{% extends "base" %}{% block content %}request '
-                   '{{ request.GET.extra }}{% endblock %}',
+                   '{{ request.GET.extra }} {{ LANGUAGE_CODE }}{% endblock %}',
         'simple': '{% extends "base" %}{% block content %}simple{% endblock %}',
         'base': '{% block head %}head{% endblock %}{% block content %}content{% endblock %}',
     }
@@ -68,9 +68,9 @@ class StaticTemplateTests(SimpleTestCase):
 
     def test_request_command(self):
         sio = StringIO()
-        call_command('statictemplate', 'request', stdout=sio,
+        call_command('statictemplate', 'request', stdout=sio, language='it',
                      extra_request='extra=extra_request&canonical=1')
-        self.assertEqual(sio.getvalue().strip(), 'headrequest extra_request')
+        self.assertEqual(sio.getvalue().strip(), 'headrequest extra_request it')
 
     def test_file_command(self):
         _, sio = mkstemp()
