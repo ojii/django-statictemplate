@@ -2,27 +2,27 @@
 Django Statictemplate
 #####################
 
-.. image:: https://pypip.in/version/django-statictemplate/badge.png
+.. image:: https://img.shields.io/pypi/v/django-statictemplate.svg?style=flat-square
     :target: https://pypi.python.org/pypi/django-statictemplate/
     :alt: Latest Version
 
-.. image:: https://travis-ci.org/yakky/django-statictemplate.svg
-    :target: https://travis-ci.org/yakky/django-statictemplate
+.. image:: https://img.shields.io/travis/ojii/django-statictemplate.svg?style=flat-square
+    :target: https://travis-ci.org/ojii/django-statictemplate
     :alt: Travis status
 
-.. image:: https://coveralls.io/repos/yakky/django-statictemplate/badge.png
-    :target: https://coveralls.io/r/yakky/django-statictemplate
+.. image:: https://img.shields.io/coveralls/ojii/django-statictemplate.svg?style=flat-square
+    :target: https://coveralls.io/r/ojii/django-statictemplate
     :alt: Coveralls status
 
-.. image:: https://pypip.in/download/django-statictemplate/badge.png
+.. image:: https://img.shields.io/pypi/dm/django-statictemplate.svg?style=flat-square
     :target: https://pypi.python.org/pypi//django-statictemplate/
     :alt: Download
 
-.. image:: https://pypip.in/wheel/django-statictemplate/badge.png
+.. image:: https://img.shields.io/pypi/wheel/django-statictemplate.svg?style=flat-square
     :target: https://pypi.python.org/pypi/django-statictemplate/
     :alt: Wheel Status
 
-.. image:: https://pypip.in/license/django-statictemplate/badge.png
+.. image:: 	https://img.shields.io/pypi/l/django-statictemplate.svg?style=flat-square
     :target: https://pypi.python.org/pypi/django-statictemplate/
     :alt: License
 
@@ -38,6 +38,9 @@ whatsoever in it.
 Note that this means that every time you change your error pages, you need to
 re-run this script. Ideally this is part of your deploy process.
 
+**Supported Django versions: 1.6, 1.7, 1.8, 1.9**
+
+For older versions use ``django-statictemplate==2.0.1``
 
 ************
 Installation
