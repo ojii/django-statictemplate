@@ -2,3 +2,5 @@
 coverage_html
 *.egg-info
 *.py[co]
+build
+dist

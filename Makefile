@@ -13,6 +13,7 @@ help:
 clean: clean-build clean-pyc
 
 clean-build:
+	python setup.py clean --all
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
@@ -24,18 +25,19 @@ clean-pyc:
 
 lint:
 	flake8 statictemplate
+	isort -rc -c -df statictemplate
 
 test:
 	python runtests.py
 
 coverage:
-	coverage run runtests.py
+	coverage erase
+	coverage run setup.py test
 	coverage report -m
-	coverage html
 
 release: clean
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
 
 sdist: clean
 	python setup.py sdist
