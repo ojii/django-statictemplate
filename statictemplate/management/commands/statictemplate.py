@@ -1,26 +1,27 @@
 # -*- coding: utf-8 -*-
-from contextlib import contextmanager
 import codecs
+from contextlib import contextmanager
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.shortcuts import render
+from django.test.client import Client
+from django.utils.translation import get_language
 
 try:
     import urlparse
 except ImportError:  # NOQA
     from urllib import parse as urlparse
-from django.conf import settings
 
 try:
     from django.conf.urls.defaults import url, include
 except ImportError:  # NOQA
     from django.conf.urls import url, include
-from django.core.management.base import BaseCommand
-from django.shortcuts import render
-from django.test.client import Client
 
 try:
     from django.utils.encoding import force_text
 except ImportError:  # NOQA
     from django.utils.encoding import force_unicode as force_text
-from django.utils.translation import get_language
 
 
 class InvalidResponseError(Exception):
