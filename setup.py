@@ -5,7 +5,7 @@ from statictemplate import __version__
 
 
 INSTALL_REQUIRES = [
-    'django>=1.2',
+    'django>=1.6',
 ]
 
 CLASSIFIERS = [
@@ -15,11 +15,17 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
+    'Framework :: Django',
+    'Framework :: Django :: 1.6',
+    'Framework :: Django :: 1.7',
+    'Framework :: Django :: 1.8',
+    'Framework :: Django :: 1.9',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3.3',
     'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
     'Topic :: Software Development',
 ]
 
