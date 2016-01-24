@@ -12,7 +12,7 @@ try:
 except ImportError:  # NOQA
     from django.conf.urls import patterns, url, include
 from django.core.management.base import BaseCommand
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template.context import RequestContext
 from django.test.client import Client
 try:
@@ -104,12 +104,12 @@ class Command(BaseCommand):
             self.stdout.write(output)
 
 
-def render(request):
+def render_view(request):
     template_name = request.GET['template']
-    return render_to_response(template_name)
+    return render(request, template_name)
 
 
 urlpatterns = [
-    url('^$', render),
+    url('^$', render_view),
     url('^', include(settings.ROOT_URLCONF))
 ]
