@@ -25,11 +25,11 @@ from statictemplate.management.commands.statictemplate import make_static, \
 
 from . import settings as statictemplate_settings
 
-
 class TestLoader(Loader):
     is_usable = True
     templates = {
-        'request': '{% extends "base" %}{% block content %}request {{ request.GET.extra }}{% endblock %}',
+        'request': '{% extends "base" %}{% block content %}request '
+                   '{{ request.GET.extra }}{% endblock %}',
         'simple': '{% extends "base" %}{% block content %}simple{% endblock %}',
         'base': '{% block head %}head{% endblock %}{% block content %}content{% endblock %}',
     }
@@ -92,5 +92,5 @@ class StaticTemplateTests(SimpleTestCase):
             settings.MIDDLEWARE_CLASSES = middleware
             statictemplate_settings.OVERRIDE_MIDDLEWARE = False
             with self.assertRaises(InvalidResponseError):
-                output = make_static('simple')
+                make_static('simple')
             statictemplate_settings.OVERRIDE_MIDDLEWARE = True

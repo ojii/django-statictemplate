@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 from contextlib import contextmanager
 import codecs
-from optparse import make_option
+
 try:
     import urlparse
 except ImportError:  # NOQA
     from urllib import parse as urlparse
 from django.conf import settings
+
 try:
-    from django.conf.urls.defaults import patterns, url, include
+    from django.conf.urls.defaults import url, include
 except ImportError:  # NOQA
-    from django.conf.urls import patterns, url, include
+    from django.conf.urls import url, include
 from django.core.management.base import BaseCommand
-from django.shortcuts import render_to_response, render
-from django.template.context import RequestContext
+from django.shortcuts import render
 from django.test.client import Client
+
 try:
     from django.utils.encoding import force_text
 except ImportError:  # NOQA
@@ -77,16 +78,16 @@ def make_static(template, language=None, request=None):
 
 
 class Command(BaseCommand):
-    def add_arguments(self,parser):
-      parser.add_argument('--file','-f',
-                          action='store',
-                          dest='output',
-                          help='Output file'),
-      parser.add_argument('--language-code','-l',
-                          action='store',
-                          dest='language_code',
-                          help='Language Code')
-      parser.add_argument('template', nargs='+', type=str)
+    def add_arguments(self, parser):
+        parser.add_argument('--file', '-f',
+                            action='store',
+                            dest='output',
+                            help='Output file'),
+        parser.add_argument('--language-code', '-l',
+                            action='store',
+                            dest='language_code',
+                            help='Language Code')
+        parser.add_argument('template', nargs='+', type=str)
 
     def handle(self, template, language=None, extra_request=None, **options):
         request = {}
