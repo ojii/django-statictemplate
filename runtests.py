@@ -18,6 +18,10 @@ DEFAULT_SETTINGS = dict(
             'ENGINE': 'django.db.backends.sqlite3'
         }
     },
+    LANGUAGES = (
+        ('en-us', 'English'),
+        ('it', 'Italian'),
+    ),
     ROOT_URLCONF='runtests',
     SITE_ID=1,
     MIDDLEWARE_CLASSES=[

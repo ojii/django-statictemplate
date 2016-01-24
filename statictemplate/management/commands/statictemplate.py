@@ -47,10 +47,11 @@ def override_middleware():
         has_old = hasattr(settings, 'MIDDLEWARE_CLASSES')
         old = getattr(settings, 'MIDDLEWARE_CLASSES', None)
         settings.MIDDLEWARE_CLASSES = (
-            'django.middleware.common.CommonMiddleware',
             'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.middleware.csrf.CsrfViewMiddleware',
             'django.contrib.auth.middleware.AuthenticationMiddleware',
+            'django.middleware.csrf.CsrfViewMiddleware',
+            'django.middleware.locale.LocaleMiddleware',
+            'django.middleware.common.CommonMiddleware',
         )
         yield
         if has_old:
@@ -58,7 +59,7 @@ def override_middleware():
         else:  # NOQA
             delattr(settings, 'MIDDLEWARE_CLASSES')
     else:
-        yield
+        yield  # pragma: no cover
 
 
 def make_static(template, language=None, request=None):
@@ -92,12 +93,10 @@ class Command(BaseCommand):
 
     def handle(self, template, language=None, extra_request=None, **options):
         request = {}
-        language = options.get('language_code', False)
-        if not language:
-            language = get_language()
+        language_code = options.get('language_code', language)
+        language = language_code or language or get_language()
         if extra_request:
-            request.update(urlparse.parse_qs(extra_request,
-                                             strict_parsing=True))
+            request.update(urlparse.parse_qs(extra_request, strict_parsing=True))
         output = make_static(template, language, request)
         if options.get('output', False):
             with codecs.open(options.get('output'), 'w', 'utf-8') as output_file:
