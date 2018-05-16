@@ -3,25 +3,18 @@ import codecs
 from contextlib import contextmanager
 
 from django.conf import settings
+from django.conf.urls import include, url
 from django.core.management.base import BaseCommand
 from django.shortcuts import render
 from django.test.client import Client
+from django.utils.encoding import force_text
+from django.utils.six.moves.urllib_parse import parse_qs
 from django.utils.translation import get_language
 
 try:
-    import urlparse
-except ImportError:  # NOQA
-    from urllib import parse as urlparse
-
-try:
-    from django.conf.urls.defaults import url, include
-except ImportError:  # NOQA
-    from django.conf.urls import url, include
-
-try:
-    from django.utils.encoding import force_text
-except ImportError:  # NOQA
-    from django.utils.encoding import force_unicode as force_text
+    from django.urls import clear_url_caches
+except ImportError:
+    from django.core.urlresolvers import clear_url_caches
 
 
 class InvalidResponseError(Exception):
@@ -33,6 +26,7 @@ def override_urlconf():
     has_old = hasattr(settings, 'ROOT_URLCONF')
     old = getattr(settings, 'ROOT_URLCONF', None)
     settings.ROOT_URLCONF = 'statictemplate.management.commands.statictemplate'
+    clear_url_caches()
     yield
     if has_old:
         setattr(settings, 'ROOT_URLCONF', old)
@@ -85,6 +79,10 @@ class Command(BaseCommand):
                             action='store',
                             dest='output',
                             help='Output file'),
+        parser.add_argument('--extra_request', '-e',
+                            action='store',
+                            dest='extra_request',
+                            help='Extra request parameters in urlencoded format')
         parser.add_argument('--language-code', '-l',
                             action='store',
                             dest='language_code',
@@ -95,8 +93,10 @@ class Command(BaseCommand):
         request = {}
         language_code = options.get('language_code', language)
         language = language_code or language or get_language()
+        if not extra_request:
+            extra_request = options.get('extra_request', [])
         if extra_request:
-            request.update(urlparse.parse_qs(extra_request, strict_parsing=True))
+            request.update(parse_qs(extra_request, strict_parsing=True))
         output = make_static(template, language, request)
         if options.get('output', False):
             with codecs.open(options.get('output'), 'w', 'utf-8') as output_file:

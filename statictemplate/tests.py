@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from distutils.version import LooseVersion
 from tempfile import mkstemp
 
-import django
 from django.conf import settings
 from django.core.management import call_command
 from django.http import HttpResponseRedirect
+from django.template import TemplateDoesNotExist
+from django.template.loaders.base import Loader
 from django.test import SimpleTestCase
+from django.utils.six import StringIO
 
 from statictemplate.management.commands.statictemplate import (
     InvalidResponseError, make_static,
@@ -15,17 +16,10 @@ from statictemplate.management.commands.statictemplate import (
 from . import settings as statictemplate_settings
 
 try:
-    from StringIO import StringIO
-except:
-    from io import StringIO
-try:
-    from django.template import TemplateDoesNotExist
-except:
-    from django.template.base import TemplateDoesNotExist
-try:
-    from django.template.loaders.base import Loader
+    from django.utils.deprecation import MiddlewareMixin
 except ImportError:
-    from django.template.loader import BaseLoader as Loader
+    class MiddlewareMixin(object):
+        pass
 
 
 class TestLoader(Loader):
@@ -44,7 +38,7 @@ class TestLoader(Loader):
         return found, template_name
 
 
-class MeddlingMiddleware(object):
+class MeddlingMiddleware(MiddlewareMixin):
     def process_request(self, request):
         return HttpResponseRedirect('/foobarbaz')
 
@@ -52,10 +46,7 @@ class MeddlingMiddleware(object):
 class StaticTemplateTests(SimpleTestCase):
     def setUp(self):
         super(StaticTemplateTests, self).setUp()
-        if LooseVersion(django.get_version()) < LooseVersion('1.8'):
-            settings.TEMPLATE_LOADERS = ['statictemplate.tests.TestLoader']
-        else:
-            settings.TEMPLATES[0]['OPTIONS']['loaders'] = ['statictemplate.tests.TestLoader']
+        settings.TEMPLATES[0]['OPTIONS']['loaders'] = ['statictemplate.tests.TestLoader']
 
     def test_python_api(self):
         output = make_static('simple')
