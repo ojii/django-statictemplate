@@ -38,7 +38,7 @@ whatsoever in it.
 Note that this means that every time you change your error pages, you need to
 re-run this script. Ideally this is part of your deploy process.
 
-**Supported Django versions: 1.6, 1.7, 1.8, 1.9**
+**Supported Django versions: 1.8, 1.9, 1.10, 1.11**
 
 For older versions use ``django-statictemplate==2.0.1``
 
@@ -91,17 +91,20 @@ Arguments
 =========
 
 * ``template``: standard django template name to render
-* ``language``: sets the client django_language cookie to render page in the
-  given language
-* ``extra_request``: extra parameters injected in the request. Parameters must
-  be serialized in querystring format (e.g.: ``'variable=value&variable=value'``;
-  please note the single quote **'** to protect ampersand **&**).
+
 
 =======
 Options
 =======
 
 * ``-f``, ``--file``: file destionation for command output
+* ``-l``, ``--language-code``: sets the client django_language cookie to render
+  page in the given language
+* ``-f``, ``--file``: file destionation for command output
+* ``-e``, ``--extra_request``: extra parameters injected in the request.
+  Parameters must be serialized in querystring format (e.g.:
+  ``'variable=value&variable=value'``; please note the single quote **'** to
+  protect ampersand **&**).
 
 *******
 License

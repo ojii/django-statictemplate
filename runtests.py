@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from distutils.version import LooseVersion
 
-urlpatterns = []
+urlpatterns = [
+]
 
 DEFAULT_SETTINGS = dict(
     INSTALLED_APPS=[
@@ -18,7 +18,7 @@ DEFAULT_SETTINGS = dict(
             'ENGINE': 'django.db.backends.sqlite3'
         }
     },
-    LANGUAGES = (
+    LANGUAGES=(
         ('en-us', 'English'),
         ('it', 'Italian'),
     ),
@@ -40,34 +40,22 @@ def runtests():
     import django
     from django.conf import settings
 
-    if LooseVersion(django.get_version()) < LooseVersion('1.8'):
-        DEFAULT_SETTINGS['TEMPLATE_CONTEXT_PROCESSORS'] = [
-            'django.contrib.auth.context_processors.auth',
-            'django.core.context_processors.i18n',
-            'django.core.context_processors.debug',
-            'django.core.context_processors.request',
-            'django.core.context_processors.media',
-            'django.core.context_processors.static',
-            'django.core.context_processors.tz',
-            'django.contrib.messages.context_processors.messages',
-        ]
-    else:
-        DEFAULT_SETTINGS['TEMPLATES'] = [{
-            'NAME': 'django',
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'OPTIONS': {
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.template.context_processors.i18n',
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.template.context_processors.media',
-                    'django.template.context_processors.static',
-                    'django.template.context_processors.tz',
-                    'django.contrib.messages.context_processors.messages',
-                ],
-            }
-        }]
+    DEFAULT_SETTINGS['TEMPLATES'] = [{
+        'NAME': 'django',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        }
+    }]
 
     # Compatibility with Django 1.7's stricter initialization
     if not settings.configured:
